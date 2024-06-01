@@ -10,7 +10,7 @@ library(stringr)
 renamorder <- function(dat){
     dat <- dat[,order(names(dat), decreasing=T)]
     names(dat) <- str_to_title(gsub('_',' ',names(dat)))
-    names(dat)[names(dat)=='Mcconaugh'] <- 'McConaugh'
+    names(dat)[names(dat)=='Mcconaugh'] <- 'McConaughy'
     names(dat) <- gsub(' Lake','', names(dat)
     )
     return(dat)

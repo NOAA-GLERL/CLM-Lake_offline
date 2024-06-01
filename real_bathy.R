@@ -46,7 +46,7 @@ values(grdctl) <- t(my_var)[1059:1,]
 lks <- lks[order(lks$NAME),]
 lks$NAME <- str_to_title(gsub('_',' ',lks$NAME))
 lks$NAME <- gsub(' Lake','',lks$NAME)
-lks$NAME <- gsub('Mcconaugh','McConaugh',lks$NAME)
+lks$NAME <- gsub('Mcconaugh','McConaughy',lks$NAME)
 
 
 

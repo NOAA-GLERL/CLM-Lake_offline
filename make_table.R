@@ -136,7 +136,7 @@ tbl$rmse_diff <- apply(rmse[,c('ctl','glo')], 1, diff) # order of diff is UNINTU
 #tbl <- tbl[order(tbl$rmse_diff, decreasing=T),]
 tbl <- tbl[order(tbl$name),]
 tbl$name <- gsub(' Lake', '', tbl$name)
-tbl$name <- gsub('Mcconaugh', 'McConaugh', tbl$name)
+tbl$name <- gsub('Mcconaugh', 'McConaughy', tbl$name)
 
 tbl[nrow(tbl)+1,-1] <- apply(tbl[,-1], 2, mean, na.rm=T)
 tbl[nrow(tbl),'name'] <- 'mean'

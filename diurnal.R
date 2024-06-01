@@ -1,3 +1,4 @@
+#!/bin/Rscript
 source('utils.R')
 
 ctl <- filter_rng(read.table('csv/ctl_T3D.csv', row.names=1, sep=','))
@@ -31,6 +32,7 @@ row.names(glo) <- unique(ymd)
 
 #lks <- names(ctl)
 lks <- row.names(meta)
+print(lks)
 
 #sel1 <- lks[temp<7]
 #sel2 <- lks[temp>=7 & temp <10]

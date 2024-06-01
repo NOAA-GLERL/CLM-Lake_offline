@@ -38,7 +38,7 @@ pdf(file=sprintf('%s/glo_depth.pdf', outdir), w=24, h=12)
 lks <- lks[order(lks$NAME),]
 lks$NAME <- str_to_title(gsub('_',' ',lks$NAME))
 lks$NAME <- gsub(' Lake','',lks$NAME)
-lks$NAME <- gsub('Mcconaugh','McConaugh',lks$NAME)
+lks$NAME <- gsub('Mcconaugh','McConaughy',lks$NAME)
 
 
 # loop thru all lakes and plot stuff

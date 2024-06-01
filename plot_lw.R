@@ -1,4 +1,4 @@
-!/bin/Rscript
+#!/bin/Rscript
 qlibrary(viridis)
 qlibrary(stringr)
 qlibrary(fields)
@@ -63,7 +63,7 @@ row.names(glo_avg) <- dts_mod
 renamorder <- function(dat){ 
 	dat <- dat[,order(names(dat), decreasing=T)]
 	names(dat) <- str_to_title(gsub('_',' ',names(dat)))
-	names(dat)[names(dat)=='Mcconaugh'] <- 'McConaugh'
+	names(dat)[names(dat)=='Mcconaugh'] <- 'McConaughy'
 	names(dat) <- gsub(' Lake','', names(dat)
 	)
 	return(dat)
@@ -202,12 +202,13 @@ mtext(side=2, outer=T, text='Lake-wide surface temperature (deg C)', cex=1.25, l
 }
 
 
-pdf(file=sprintf('%s/mon_diff.pdf', outdir), w=12, h=10)
+pdf(file=sprintf('%s/supplemental/mon_diff.pdf', outdir), w=12, h=10)
 par(mar=c(4,10,4,1))
-lk_names <- str_to_title(gsub('_',' ',names(ctl_mon)))
+lk_names <- names(ctl_mon)
+#lk_names <- str_to_title(gsub('_',' ',names(ctl_mon)))
 
 image.plot(x=mons, y=1:ncol(ctl_mon), z=as.matrix(glo_mon-ctl_mon), col=hcl.colors(100,'Blue-Red 3') , xaxt='n', yaxt='n',
-		   main='Lake-wide Sfc Temp Difference (GLOBathy - Flatbottom)', ylab=NA, xlab=NA, legend.lab='degrees C')
+		   main='Lake-wide LST Difference (GLOBathy - Flatbottom)', ylab=NA, xlab=NA, legend.lab='degrees C')
 axis(2, at=1:ncol(ctl), lab=lk_names, las=2, cex.axis=1.5)
 axis.Date(1,at=mons, lab=substr(month.abb,1,1), line=0, lwd=1, cex.axis=1.25)
 dev.off()
@@ -262,7 +263,7 @@ ctl_ice[ctl_ice[,'Goose']==.12,'Goose'] <- 0
 if(T){
 	pdf(file=sprintf('%s/lakewide_icediff.pdf', outdir), w=20)
 	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
-	image.plot(x=dts_ice, y=1:ncol(ctl_ice), z=as.matrix(glo_ice-ctl_ice), col=hcl.colors(100, 'Purple-Green'), zlim=c(-1,1), 
+	image.plot(x=dts_ice, y=1:ncol(ctl_ice), z=as.matrix(glo_ice-ctl_ice), col=rev(hcl.colors(100, 'Purple-Brown')), zlim=c(-1,1), 
 			   xaxt='n', yaxt='n', main='Fractional Ice Cover Difference: GLOBathy - Flatbottom', 
 			ylab=NA, xlab=NA)
 	axis(2, at=1:ncol(ctl_ice), lab=names(ctl_ice), las=2)
