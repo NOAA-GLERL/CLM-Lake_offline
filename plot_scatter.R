@@ -1,6 +1,6 @@
 #!/bin/Rscript
 
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
+outdir <- '/home/j4mes/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
 dat <- read.csv('../65e0d491f698c7b0fdfee2b7/table.csv', strip=T, row.names=1)
 
 dep_red <- (dat$dep_flt-dat$dep_glo)/dat$dep_flt # dep reduction (fraction)
@@ -42,7 +42,7 @@ axis(4)
 
 mtext(side=1, cex=1.5, line=2.5, outer=T, 'proportional reduction in lake depth')
 mtext(side=2, cex=1.5, line=2, outer=T, 'root-mean-square deviation (deg C)')
-mtext(side=4, cex=1.5, line=2, outer=T, 'Satellite RMSE reduction (deg C)')
+mtext(side=4, cex=1.5, line=2, outer=T, 'Satellite RMSE change (deg C)')
 #mtext(side=4, cex=1.5, line=2, outer=T, 'min/max departures: GLOBathy-flatbottom (deg C)')
 
 

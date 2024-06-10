@@ -5,7 +5,7 @@ qlibrary(fields)
 graphics.off()
 
 
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
+outdir <- '/home/j4mes/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
 rng <- list(min=-40, max=50)
 
 lkmeta <- read.table('txt/lake_ids.txt', head=T)
@@ -83,20 +83,42 @@ max_diff <- abs(max(range(glo-ctl, na.rm=T)))
 #ctl <- ctl[1:420,]
 #glo <- glo[1:420,]
 
+ctl_ice <- read.table('csv/ctl_ice.csv', row.names=1, sep=',')
+glo_ice <- read.table('csv/glo_ice.csv', row.names=1, sep=',')
+dts_ice <- as.Date(row.names(ctl_ice), format='%Y%m%d')
+ice_mask <- matrix(NA, length(dts_ice), ncol(ctl_ice))
+
+thresh <- .9
+ice_mask[ glo_ice > thresh & ctl_ice > thresh] <- 1
+
+nlks <- length(lks)
+
+#dbg
+#x11()
+#plot(dts_ice, glo_ice$sebago, 'l')
+#lines(dts_ice, ctl_ice$sebago, 'l', col='blue')
+#abline(h=.9, lty=2)
+#points(dts_ice,ice_mask[19,], pch=20, col='red')
+
 
 # temp diff plot
 if(T){
 	pdf(file=sprintf('%s/lakewide_tempdiff.pdf', outdir), w=20)
+	#x11(w=20)
 	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
 	image.plot(x=dts_mod, y=1:ncol(ctl), z=as.matrix(glo_avg-ctl_avg), col=hcl.colors(256,'blue-Red 3'), xaxt='n', yaxt='n', 
 			   main='Temperature Difference (°C): GLOBathy - Flatbottom ', ylab=NA, xlab=NA, zlim=c(-7,7))
 	axis(2, at=1:ncol(ctl), lab=names(ctl), las=2)
 	#axis.Date(side=1, x=dts_mod, at=seq(dts_mod[1], rev(dts_mod)[1], by='month', format='%b'), format='%b \'%y')
 	axis.Date(side=1, x=dts_mod, at=seq(dts_mod[1], rev(dts_mod)[1], by='month'), format='%b')
+
+	for (i in 1:nlks) points(x=dts_ice, y=rep(nlks-i+1, length(dts_ice)), col=ice_mask[,i], pch=3, lwd=.5, cex=.75)
+	#for (i in 1:nlks) points(x=dts_ice, y=rep(nlks-i+1, length(dts_ice)), col=ice_mask[,i], pch='-', lwd=.5, cex=.75)
 	dev.off()
 }
 
 
+stop()
 # INTERSECT DATES for OBS and MODEL 
 comdts <- format(as.Date(intersect(dts_mod, dts_obs)), '%Y-%m-%d')
 comdts <- comdts[comdts<'2019-12-20']  # ditch bad data post xmas (some ctl lakes blowup)
