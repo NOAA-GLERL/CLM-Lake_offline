@@ -75,11 +75,11 @@ dts <- as.Date(colnames(onoff), format='%Y%m%d')
 pdf(file=fig_out, width=w, height=h)
 par(cex.axis=1.5, cex.lab=1.5)
 # plot both models
-image(x=dts, y=(1:nrow(onoff))-.5, z=t(onoff), yaxt='n', ylab=NA,
+image(x=dts, y=(1:nrow(onoff))-.5, z=t(onoff), yaxt='n', ylab=NA, xlab=NA,
 	  xlim=c(as.Date('2018-12-01'), as.Date('2019-05-01')), col=c(bgcol,fgcol))
 abline(h=(1:8), col='white')
 axis(2, at=seq(1,7,by=2), lab=lknames, tcl=0, line=1, lwd=0)
-axis(2, at=(0:7)+.5, lab=rep(c('FB','Glo'),4), tcl=0, line=-.5, lwd=0, cex.axis=1.125)
+axis(2, at=(0:7)+.5, lab=rep(c('FB','GLOB'),4), tcl=0, line=-.5, lwd=0, cex.axis=1.125)
 axis(2, at=c(0,2,4,6,8), lab=NA, tcl=-3)
 abline(h=c(2,4,6), col='black')
 
