@@ -5,10 +5,10 @@ qlibrary(fields)
 graphics.off()
 
 
-outdir <- '/home/j4mes/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
+outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
 rng <- list(min=-40, max=50)
 
-lkmeta <- read.table('txt/lake_ids.txt', head=T)
+lkmeta <- read.table('lake_wide_csv/lake_ids.txt', head=T)
 
 min_frac <- .3
 ctlcol <- 'brown'
@@ -24,14 +24,14 @@ filter_rng <- function(data){
 	return(data)
 }
 
-obs <- read.table('txt/temp_out_mq3.txt')
-frac <- read.table('txt/frac_out_mq3.txt')
+obs <- read.table('lake_wide_csv/temp_out_mq3.txt', row.names=1)
+frac <- read.table('lake_wide_csv/frac_out_mq3.txt', row.names=1)
 obs[frac < min_frac] <- NA
 
 dts_obs <- as.Date(row.names(obs), format='%Y%m%d')
 row.names(obs) <- dts_obs
-ctl <- read.table('csv/ctl_T3D.csv', row.names=1, sep=',')
-glo <- read.table('csv/bi0m_T3D.csv', row.names=1, sep=',')
+ctl <- read.table('lake_wide_csv/ctl_T3D.csv', row.names=1, sep=',')
+glo <- read.table('lake_wide_csv/bi0m_T3D.csv', row.names=1, sep=',')
 
 
 dts_mod <- as.POSIXct(row.names(ctl), 'z')
@@ -83,8 +83,8 @@ max_diff <- abs(max(range(glo-ctl, na.rm=T)))
 #ctl <- ctl[1:420,]
 #glo <- glo[1:420,]
 
-ctl_ice <- read.table('csv/ctl_ice.csv', row.names=1, sep=',')
-glo_ice <- read.table('csv/glo_ice.csv', row.names=1, sep=',')
+ctl_ice <- read.table('lake_wide_csv/ctl_ice.csv', row.names=1, sep=',')
+glo_ice <- read.table('lake_wide_csv/glo_ice.csv', row.names=1, sep=',')
 dts_ice <- as.Date(row.names(ctl_ice), format='%Y%m%d')
 ice_mask <- matrix(NA, length(dts_ice), ncol(ctl_ice))
 
@@ -102,7 +102,7 @@ nlks <- length(lks)
 
 
 # temp diff plot
-if(T){
+if(F){
 	pdf(file=sprintf('%s/lakewide_tempdiff.pdf', outdir), w=20)
 	#x11(w=20)
 	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
@@ -118,7 +118,6 @@ if(T){
 }
 
 
-stop()
 # INTERSECT DATES for OBS and MODEL 
 comdts <- format(as.Date(intersect(dts_mod, dts_obs)), '%Y-%m-%d')
 comdts <- comdts[comdts<'2019-12-20']  # ditch bad data post xmas (some ctl lakes blowup)
@@ -146,7 +145,7 @@ if(F){
 # loop to panel plot
 # PART 1:  PLOT AND SKILL ASSESS FULL TIME SERIES
 lwd <- 1.25
-if(T){
+if(F){
 	lab_dts <- seq(dts[1], rev(dts)[1], by='month')
 pdf(file=sprintf('%s/remote_val.pdf', outdir), w=17, h=10)
 layout(matrix(1:20, 5,4)); par(mar=c(0,0,0,0), oma=c(3,6,3,3), cex.axis=1.5)
@@ -171,15 +170,16 @@ for (lk in rev(lks)){
 		if(yi==5) axis.Date(1, x=dts, at=lab_dts, lab=substr(month.abb, 1, 1))
 	}
 
-}
 axis.Date(1, x=dts, at=lab_dts, lab=substr(month.abb, 1, 1))
 plot.new()
 legend('center', legend=c('Flatbottom', 'GLOBathy','Satellite Data'), 
 	   col=c(ctlcol, glocol, 'black'), lwd=c(lwd, lwd, NA), pch=c(NA,NA,20), cex=1.75)
 mtext('Lake Surface Temperature (°C)', side=2, cex=1.75, line=4, outer=T)
+}
 
 # PART 2:  PLOT MONTHLY AVERAGES
 if(T){ # MANUAL SWITCH TO PLOT
+lab_dts <- seq(dts[1], rev(dts)[1], by='month')
 mons <- format(dts,'%b')
 reorder <- match(month.abb, sort(month.abb))
 
@@ -187,7 +187,7 @@ obs_mon <- aggregate(obs, by=list(mons), mean, na.rm=T)[reorder,-1]
 ctl_mon <- aggregate(ctl, by=list(mons), mean, na.rm=T)[reorder,-1]
 glo_mon <- aggregate(glo, by=list(mons), mean, na.rm=T)[reorder,-1]
 mons <- as.Date(sprintf('2019-%02i-01', 1:12)) 
-pdf(file=sprintf('%s/supplemental/mon_validate.pdf', outdir), w=20, h=14)
+pdf(file=sprintf('%s/../supporting_info/mon_validate.pdf', outdir), w=20, h=14)
 layout(matrix(1:20, 5,4)); par(mar=c(0,0,0,0), oma=c(3,5,3,3), cex.axis=1.5)
 for (lk in rev(lks)){
 	if(all(is.na(obs[,lk]))) next
@@ -197,10 +197,10 @@ for (lk in rev(lks)){
 		points(mons, glo_mon[,lk], col=glocol, pch=17, cex=2)
 		mtext(side=3, adj=0, line=-2.5, text=sprintf(' %s', lk), cex=1.5)
 
-		par(new=T)
-		plot(mons, ctl_mon[,lk]-obs_mon[,lk], 'h', col=ctlcol, lwd=5, ylim=c(-10,40), lend=1, yaxt='n', xaxt='n')
-		lines(mons+5, glo_mon[,lk]-obs_mon[,lk], 'h', col=glocol, lwd=5, ylim=c(-10,40), lend=1)
-		abline(h=0, lwd=1)
+#		par(new=T)
+#		plot(mons, ctl_mon[,lk]-obs_mon[,lk], 'h', col=ctlcol, lwd=5, ylim=c(-10,40), lend=1, yaxt='n', xaxt='n')
+#		lines(mons+5, glo_mon[,lk]-obs_mon[,lk], 'h', col=glocol, lwd=5, ylim=c(-10,40), lend=1)
+#		abline(h=0, lwd=1)
 
 		yi <- par('mfg')[1]
 		xi <- par('mfg')[2]
@@ -223,7 +223,7 @@ legend('center', legend=c('Flatbottom', 'GLOBathy','Satellite Data'), col=c(ctlc
 mtext(side=2, outer=T, text='Lake-wide surface temperature (deg C)', cex=1.25, line=3)
 }
 
-
+if(F){
 pdf(file=sprintf('%s/supplemental/mon_diff.pdf', outdir), w=12, h=10)
 par(mar=c(4,10,4,1))
 lk_names <- names(ctl_mon)
@@ -234,6 +234,7 @@ image.plot(x=mons, y=1:ncol(ctl_mon), z=as.matrix(glo_mon-ctl_mon), col=hcl.colo
 axis(2, at=1:ncol(ctl), lab=lk_names, las=2, cex.axis=1.5)
 axis.Date(1,at=mons, lab=substr(month.abb,1,1), line=0, lwd=1, cex.axis=1.25)
 dev.off()
+}
 
 
 
@@ -282,7 +283,7 @@ ctl_ice[ctl_ice[,'Goose']==.12,'Goose'] <- 0
 
 
 # ICE DIFF PLOT
-if(T){
+if(F){
 	pdf(file=sprintf('%s/lakewide_icediff.pdf', outdir), w=20)
 	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
 	image.plot(x=dts_ice, y=1:ncol(ctl_ice), z=as.matrix(glo_ice-ctl_ice), col=rev(hcl.colors(100, 'Purple-Brown')), zlim=c(-1,1), 

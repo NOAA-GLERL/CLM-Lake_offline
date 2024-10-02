@@ -18,6 +18,8 @@ renamorder <- function(dat){
 
 outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
 
+basedir <- '/home/kessler/work/jtti/code_repo/'
+
 meta <- read.table('/home/kessler/work/jtti/analysis/txt/lks_meta.txt', head=T, row.names=1)
 row.names(meta) <- gsub('_',' ',row.names(meta))
 lks <- meta$name
@@ -54,8 +56,8 @@ read_T <- function(fn, selx, sely){
 #}
 
 
-read_lks <- function()	return(readOGR('grid/my_lks.shp'))
-read_grid <- function() return(raster('grid/wrf_grid.tif'))
+read_lks <- function()	return(readOGR(sprintf('%s/grid/my_lks.shp', basedir)))
+read_grid <- function() return(raster(sprintf('%s/grid/wrf_grid.tif', basedir)))
 
 rastT <- function(fn, varstr){
 	grd <- read_grid()
