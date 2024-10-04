@@ -3,24 +3,18 @@ source('export/utils.R')
 library(raster)
 library(viridisLite)
 library(stringr)
+source('utils.R')
 
 # mono lake
-mono_bathy <- raster('hires_bathy/mono/hdr.adf')
+mono_bathy <- raster('hires_bathy/mono/hdr.adf') # see citation for data source
 mono_bathy$hdr <- (cellStats(mono_bathy$hdr, max) - (mono_bathy$hdr))/3.28094
 
 # lake tahoe
-tahoe_bathy <- raster('hires_bathy/lt_bathy.tif')
+tahoe_bathy <- raster('hires_bathy/lt_bathy.tif') # see citation for data source
 values(tahoe_bathy)[values(tahoe_bathy)==0] <- NA
 values(tahoe_bathy) <- cellStats(tahoe_bathy, max) - values(tahoe_bathy)
 
-
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
-
-#varstr <- commandArgs(trail=T)
-#varstr <- 'LAKE_DEPTH'
 varstr <- 'LAKEDEPTH2D'
-#fn <- 'wrfinput_d01.nc'
-#fn <- '201801010000.LDASOUT_DOMAIN1'
 
 # read vars
 options(warn=-1)

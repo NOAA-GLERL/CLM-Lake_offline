@@ -1,7 +1,9 @@
+#!/usr/bin/Rscript
+
 source('utils.R')
 
-ctl <- read.table('csv/ctl_EVAP2D.csv', row.names=1, sep=',', strip=T)
-glo <- read.table('csv/bi0m_EVAP2D.csv', row.names=1, sep=',', strip=T)
+ctl <- read.table('lake_wide_csv/ctl_EVAP2D.csv', row.names=1, sep=',', strip=T)
+glo <- read.table('lake_wide_csv/bi0m_EVAP2D.csv', row.names=1, sep=',', strip=T)
 
 sglo <- apply(glo, 2, sum, na.rm=T)
 sctl <- apply(ctl, 2, sum, na.rm=T)
@@ -68,7 +70,7 @@ ctl_seas_all <- apply(ctl_seas, 1, sum)
 glo_seas_all <- apply(glo_seas, 1, sum)
 
 
-
+print('about to plot first fig')
 pdf(width=14, h=8, sprintf('%s/evap_bar.pdf', outdir))
 par(cex.axis=1.25, cex.lab=1.5)
 dat <- t(interleave(t(ctl_seas),t(glo_seas)))
@@ -77,13 +79,9 @@ ats <- barplot(dat, axes=T, axisnames=F, space=c(1,.1),
 legend('topright', legend=levels(seas), cex=1.75, col=grey.colors(4), pch=15)
 text(ats[c(T,F)]+.5, -150, lab=lks, srt=45, xpd=T)
 dev.off()
+print('plotted first fig')
 
-
-
-
-
-
-pdf(width=24, h=16, sprintf('%s/supplemental/evap_scatter.pdf', outdir))
+pdf(width=24, h=16, sprintf('%s/supporting_info/evap_scatter.pdf', outdir))
 layout(matrix(1:24,4,6)); par(mar=c(1,1,1,1), oma=c(6,6,6,0), cex.axis=1.75)
 for (lk in lks){ 
 	plot(ctl[,lk], jitter(glo[,lk]), asp=1, xlim=c(-.2,1), ylim=c(-.2,1), 
@@ -93,7 +91,6 @@ for (lk in lks){
 	abline(a=0, b=1, col='red')
 
 	xi=par()$mfg[2]; yi=par()$mfg[1]
-	print(xi); print(yi)
 	if (xi == 1) axis(2)
 	if (yi == 4) axis(1)
 

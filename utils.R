@@ -1,6 +1,6 @@
 #!/bin/Rscript
 library(stringr)
-library(rgdal)
+library(sf)
 library(raster)
 library(ncdf4)
 
@@ -16,11 +16,10 @@ renamorder <- function(dat){
 }
 
 
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
-
+outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/'
 basedir <- '/home/kessler/work/jtti/code_repo/'
 
-meta <- read.table('/home/kessler/work/jtti/analysis/txt/lks_meta.txt', head=T, row.names=1)
+meta <- read.table('lake_wide_csv/lks_meta.txt', head=T, row.names=1)
 row.names(meta) <- gsub('_',' ',row.names(meta))
 lks <- meta$name
 
@@ -56,7 +55,7 @@ read_T <- function(fn, selx, sely){
 #}
 
 
-read_lks <- function()	return(readOGR(sprintf('%s/grid/my_lks.shp', basedir)))
+read_lks <- function()	return(st_read(sprintf('%s/grid/my_lks.shp', basedir)))
 read_grid <- function() return(raster(sprintf('%s/grid/wrf_grid.tif', basedir)))
 
 rastT <- function(fn, varstr){

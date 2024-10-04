@@ -1,7 +1,7 @@
 #!/bin/Rscript
 library(stringr)
 
-fig_out <- '../65e0d491f698c7b0fdfee2b7/figures/on_off_dates.pdf'
+fig_out <- '../65e0d491f698c7b0fdfee2b7/on_off_dates.pdf'
 w <- 15; h <- 7
 fgcol <- 'dodgerblue';  # model color
 bgcol='white'; 
@@ -9,9 +9,9 @@ oncol <- 'gold3'
 offcol <- 'forestgreen'
 lwd <- 5 # width for obs lines
 
-meta <- read.table('txt/lake_ids.txt', head=T)
+meta <- read.table('lake_wide_csv/lake_ids.txt', head=T)
 lks <- meta$name
-dat <- read.csv('PhenologyData.csv')
+dat <- read.csv('PhenologyData.csv') # obtained from Sharma et al 2022
 
 # subset for my lakes
 ice_obs <- dat[dat$lake %in% lks,c('lake','start_year','iceOn','iceOff')]
@@ -20,8 +20,8 @@ ice_obs <- ice_obs[ice_obs$start_year==2018,]
 
 
 
-ctl <- read.table('csv/ctl_ice.csv', sep=',', row.names=1)
-glo <- read.table('csv/glo_ice.csv', sep=',', row.names=1)
+ctl <- read.table('lake_wide_csv/ctl_ice.csv', sep=',', row.names=1)
+glo <- read.table('lake_wide_csv/glo_ice.csv', sep=',', row.names=1)
 
 ctl <- ctl[,c(ice_obs$lake)]
 glo <- glo[,c(ice_obs$lake)]

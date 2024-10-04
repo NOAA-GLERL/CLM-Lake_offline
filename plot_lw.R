@@ -3,14 +3,15 @@ qlibrary(viridis)
 qlibrary(stringr)
 qlibrary(fields)
 graphics.off()
+source('utils.R')
 
 
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
+# filter range
 rng <- list(min=-40, max=50)
 
-lkmeta <- read.table('lake_wide_csv/lake_ids.txt', head=T)
-
+# minimum fraction for remote data
 min_frac <- .3
+# plot colors
 ctlcol <- 'brown'
 glocol <- 'orange'
 
@@ -102,10 +103,10 @@ nlks <- length(lks)
 
 
 # temp diff plot
-if(F){
-	pdf(file=sprintf('%s/lakewide_tempdiff.pdf', outdir), w=20)
+if(T){
+	pdf(file=sprintf('%s/lakewide_tempdiff.pdf', outdir), w=20, h=9)
 	#x11(w=20)
-	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
+	par(mar=c(4,11,4,2), cex.axis=1.75, cex.main=2)
 	image.plot(x=dts_mod, y=1:ncol(ctl), z=as.matrix(glo_avg-ctl_avg), col=hcl.colors(256,'blue-Red 3'), xaxt='n', yaxt='n', 
 			   main='Temperature Difference (°C): GLOBathy - Flatbottom ', ylab=NA, xlab=NA, zlim=c(-7,7))
 	axis(2, at=1:ncol(ctl), lab=names(ctl), las=2)
@@ -148,37 +149,41 @@ lwd <- 1.25
 if(F){
 	lab_dts <- seq(dts[1], rev(dts)[1], by='month')
 pdf(file=sprintf('%s/remote_val.pdf', outdir), w=17, h=10)
-layout(matrix(1:20, 5,4)); par(mar=c(0,0,0,0), oma=c(3,6,3,3), cex.axis=1.5)
+layout(matrix(1:20, 5,4)); par(mar=c(0,0,0,0), oma=c(3,6,3,3), cex.axis=1.7)
 for (lk in rev(lks)){
 	if(all(is.na(obs[,lk]))) next
 		lkname <- gsub(' Lake','',lk)
 		lkname <- paste('  ',lkname, sep='')
-		plot(dts, obs[,lk], pch=NA, ylab=NA, xlab=NA, xaxt='n', yaxt='n', ylim=c(-10,35))
+		plot(dts, obs[,lk], pch=NA, ylab=NA, xlab=NA, xaxt='n', yaxt='n', ylim=c(0,35))
 		lines(dts, ctl[,lk], col=ctlcol, lwd=lwd)
 		lines(dts, glo[,lk], col=glocol, lwd=lwd)
 		#points(dts, obs[,lk], pch=5, cex=1, col='black', lwd=.5)
 		points(dts, obs[,lk], pch=20, cex=.75, col='black')
-		mtext(side=3, adj=0, line=-2, text=lkname, cex=1.25)
+		mtext(side=3, adj=0, line=-2, text=lkname, cex=1.5)
 
 		yi <- par('mfg')[1]
 		xi <- par('mfg')[2]
 		if(xi==1 & yi%%2==1) axis(2)
+		if(xi==1) axis(4, tcl=.2, lab=NA)
 		if(xi==4 & yi%%2==0) axis(4)
+		if(xi==4) axis(2, tcl=.2, lab=NA)
 		if(xi==1 & yi%%2==0) axis(2, lab=NA)
 		if(xi==4 & yi%%2==1) axis(4, lab=NA)
 		if(yi==1) axis.Date(3, x=dts, at=lab_dts, lab=NA)
 		if(yi==5) axis.Date(1, x=dts, at=lab_dts, lab=substr(month.abb, 1, 1))
+		if(xi==2 | xi==3) axis(2, lab=NA, tcl=.2)
+		if(xi==2 | xi==3) axis(4, lab=NA, tcl=.2)
 	}
 
 axis.Date(1, x=dts, at=lab_dts, lab=substr(month.abb, 1, 1))
 plot.new()
 legend('center', legend=c('Flatbottom', 'GLOBathy','Satellite Data'), 
-	   col=c(ctlcol, glocol, 'black'), lwd=c(lwd, lwd, NA), pch=c(NA,NA,20), cex=1.75)
+	   col=c(ctlcol, glocol, 'black'), lwd=c(lwd, lwd, NA), pch=c(NA,NA,20), cex=2)
 mtext('Lake Surface Temperature (°C)', side=2, cex=1.75, line=4, outer=T)
 }
 
 # PART 2:  PLOT MONTHLY AVERAGES
-if(T){ # MANUAL SWITCH TO PLOT
+if(F){ # MANUAL SWITCH TO PLOT
 lab_dts <- seq(dts[1], rev(dts)[1], by='month')
 mons <- format(dts,'%b')
 reorder <- match(month.abb, sort(month.abb))
@@ -187,7 +192,8 @@ obs_mon <- aggregate(obs, by=list(mons), mean, na.rm=T)[reorder,-1]
 ctl_mon <- aggregate(ctl, by=list(mons), mean, na.rm=T)[reorder,-1]
 glo_mon <- aggregate(glo, by=list(mons), mean, na.rm=T)[reorder,-1]
 mons <- as.Date(sprintf('2019-%02i-01', 1:12)) 
-pdf(file=sprintf('%s/../supporting_info/mon_validate.pdf', outdir), w=20, h=14)
+
+pdf(file=sprintf('%s/supporting_info/mon_validate.pdf', outdir), w=20, h=14)
 layout(matrix(1:20, 5,4)); par(mar=c(0,0,0,0), oma=c(3,5,3,3), cex.axis=1.5)
 for (lk in rev(lks)){
 	if(all(is.na(obs[,lk]))) next
@@ -245,8 +251,8 @@ dev.off()
 
 
 
-ctl_ice <- read.table('csv/ctl_ice.csv', row.names=1, sep=',')
-glo_ice <- read.table('csv/glo_ice.csv', row.names=1, sep=',')
+ctl_ice <- read.table('lake_wide_csv/ctl_ice.csv', row.names=1, sep=',')
+glo_ice <- read.table('lake_wide_csv/glo_ice.csv', row.names=1, sep=',')
 dts_ice <- as.Date(row.names(ctl_ice), format='%Y%m%d')
 
 # clip no ice lakes (based on ctl runs)
@@ -283,10 +289,14 @@ ctl_ice[ctl_ice[,'Goose']==.12,'Goose'] <- 0
 
 
 # ICE DIFF PLOT
-if(F){
-	pdf(file=sprintf('%s/lakewide_icediff.pdf', outdir), w=20)
-	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
-	image.plot(x=dts_ice, y=1:ncol(ctl_ice), z=as.matrix(glo_ice-ctl_ice), col=rev(hcl.colors(100, 'Purple-Brown')), zlim=c(-1,1), 
+col=rev(hcl.colors(100,'blue-Red 3'))
+#col=hcl.colors(100,'Purple-Brown')
+
+
+if(T){
+	pdf(file=sprintf('%s/lakewide_icediff.pdf', outdir), w=20, h=7)
+	par(mar=c(4,11,4,2), cex.axis=1.75, cex.main=2)
+	image.plot(x=dts_ice, y=1:ncol(ctl_ice), z=as.matrix(glo_ice-ctl_ice), col=col, zlim=c(-1,1), 
 			   xaxt='n', yaxt='n', main='Fractional Ice Cover Difference: GLOBathy - Flatbottom', 
 			ylab=NA, xlab=NA)
 	axis(2, at=1:ncol(ctl_ice), lab=names(ctl_ice), las=2)

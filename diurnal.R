@@ -1,8 +1,8 @@
 #!/bin/Rscript
 source('utils.R')
 
-ctl <- filter_rng(read.table('csv/ctl_T3D.csv', row.names=1, sep=','))
-glo <- filter_rng(read.table('csv/bi0m_T3D.csv', row.names=1, sep=','))
+ctl <- filter_rng(read.table('lake_wide_csv/ctl_T3D.csv', row.names=1, sep=','))
+glo <- filter_rng(read.table('lake_wide_csv/bi0m_T3D.csv', row.names=1, sep=','))
 
 # diurnal ranges
 ctl <- renamorder(ctl)
@@ -69,31 +69,31 @@ labs <- levels(seas)
 pdf(file=sprintf('%s/box_diurnal.pdf', outdir), w=17, h=11)
 #x11()
 layout(matrix(1:25, 5,5)); 
-par(mar=c(0,0,0,0), oma=c(3,7,3,3), cex.axis=1.5)
+par(mar=c(0,0,0,0), oma=c(3,7,3,3), cex.axis=1.75)
 for (lk in lks){
 		boxplot(dat[,lk]~dat$case+dat$seas, col=c(ctlcol, glocol), at=1:8-c(0,.125),
 			xaxt='n', xlab=NA, ylab=NA, outline=F, ylim=c(0,14), yaxt='n')
 
 		ti_str <- sprintf('%s \n%i°N ',lk, round(meta[lk,'lat'], digits=0))
-		mtext(side=3, adj=1, line=-4, text=ti_str, cex=1.125)
+		mtext(side=3, adj=1, line=-4.5, text=ti_str, cex=1.35)
         yi <- par('mfg')[1]
         xi <- par('mfg')[2]
-        if(xi==1 & yi%%2==0) axis(2, at=seq(2,12,by=2), cex.axis=1.125)
-        if((xi==5 | (yi==4 & xi==4)) & yi%%2==1) axis(4, at=seq(2,12,by=2), cex.axis=1.125)
+        if(xi==1 & yi%%2==0) axis(2, at=seq(0,14,by=2), lab=c(0,NA,4,NA,8,NA,12,NA), cex.axis=1.5)
+        if((xi==5 | (yi==4 & xi==4)) & yi%%2==1) axis(4, at=seq(0,14,by=2), lab=c(0,NA,4,NA,8,NA,12,NA), cex.axis=1.5)
         if(yi==5 | (yi==3 & xi==5)) axis(1, at=at_labs, lab=labs)
-		axis(4, lab=NA, tcl=.15); 
-		axis(2, lab=NA, tcl=.15)
+		axis(4, lab=NA, tcl=.25); 
+		axis(2, lab=NA, tcl=.25)
 }
-mtext('Diurnal Temperature Range (°C) N=days', side=2, outer=T, cex=1.5, line=4)
+mtext('Diurnal Temperature Range (°C) N=days', side=2, outer=T, cex=2, line=4.5)
 
 plot.new()
-legend('center', legend=c('flatbottom', 'GLOBathy'), text.col=c(ctlcol, glocol), cex=2.25, adj=+.125)
+legend('center', legend=c('flatbottom', 'GLOBathy'), text.col=c(ctlcol, glocol), cex=2.5, adj=+.125)
 
 
 boxplot(as.matrix(dat[lks])~dat$case+dat$seas, col=c(ctlcol, glocol), at=1:8-c(0,.125),
 	xaxt='n', xlab=NA, ylab=NA, outline=F, ylim=c(0,14), yaxt='n')
-axis(4, at=seq(2,12,by=2), cex.axis=1.125)
-mtext(side=3, adj=1, line=-2, text='All Lakes  ', cex=1.25)
+axis(4, at=seq(0,14,by=2), lab=c(0,NA,4,NA,8,NA,12,NA), cex.axis=1.5)
+mtext(side=3, adj=1, line=-2.5, text='All Lakes  ', cex=1.35)
 axis(1, at=at_labs, lab=labs)
 graphics.off()
 

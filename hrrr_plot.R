@@ -4,11 +4,10 @@ qlibrary(stringr)
 qlibrary(fields)
 graphics.off()
 
+source('utils.R')
 
-outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/figures/'
-lkmeta <- read.table('txt/lake_ids.txt', head=T)
 
-hrrr <- read.table('csv/T2D.csv', row.names=1, sep=',')
+hrrr <- read.table('lake_wide_csv/HRRR_T2D.csv', row.names=1, sep=',')
 dts <- as.POSIXct(row.names(hrrr), 'z')
 
 
@@ -27,9 +26,9 @@ hrrr <- renamorder(hrrr)
 
 # temp diff plot
 if(T){
-	pdf(file=sprintf('%s/hrrr_temp.pdf', outdir), w=20)
+	pdf(file=sprintf('%s/hrrr_temp.pdf', outdir), w=20, h=9)
 #	graphics.off(); x11(w=20)
-	par(mar=c(4,9.5,4,2), cex.axis=1.25, cex.main=2)
+	par(mar=c(4,11,4,2), cex.axis=1.75, cex.main=2)
 	image.plot(x=dts, y=1:ncol(hrrr), z=as.matrix(hrrr), col=inferno(100), xaxt='n', yaxt='n', 
 			   main='HRRR 2M Air Temperature (°C)', ylab=NA, xlab=NA)
 	axis(2, at=1:ncol(hrrr), lab=names(hrrr), las=2)
