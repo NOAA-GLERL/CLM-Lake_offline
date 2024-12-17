@@ -1,7 +1,7 @@
 #!/usr/bin/Rscripts
-qlibrary(raster)
-qlibrary(rgdal)
-qlibrary(ncdf4)
+library(terra)
+library(sf)
+library(ncdf4)
 source('utils.R')
 #
 ## =====================================================================================
