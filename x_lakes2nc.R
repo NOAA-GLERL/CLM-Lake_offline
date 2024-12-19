@@ -10,17 +10,17 @@ source('utils.R')
 #casename <- commandArgs(trail=T)[1]
 #t0 <- '20181101'
 #tf <- '20190101'
-var_str <- 'LAKE_T3D'
-#var_str <- 'LAKE_ICE3D'
-#msk <- T # no longer active 
+#var_str <- 'LAKE_T3D'
+var_str <- 'LAKE_ICE3D'
+#msk <- T 
+#casename <- 'ctl'
 casename <- 'ctl'
-#casename <- 'bi0m'
 #print('USING LATEST RUNS')
 #dir_in <- sprintf('/nfs/turbo/seas-drewgron/wrf_hydro/run/OUTPUT/%s', casename)
 
 #dir_in <- sprintf('/%s', casename)
 dir_in <- sprintf('/nfs/turbo/seas-hydro/um-jtti-ufs/wrfout/%s/', casename)
-dir_out <- sprintf('/nfs/turbo/seas-hydro/um-jtti-ufs/CLM-Lake-offline/new_extracted_netCDF/%s', casename)
+dir_out <- sprintf('/nfs/turbo/seas-hydro/um-jtti-ufs/CLM-Lake-offline/extracted_lakes_netCDF/%s', casename)
 
 #dir_out <- sprintf('lw_out/%s', var_str)
 if (!dir.exists(dir_out)) dir.create(dir_out)
