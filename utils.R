@@ -18,7 +18,9 @@ renamorder <- function(dat){
 
 #outdir <- '/home/kessler/work/jtti/65e0d491f698c7b0fdfee2b7/'
 outdir <- '/home/j4mes/work/clm/'
-basedir <- '/home/j4mes/work/clm/CLM-Lake-offline/'
+#basedir <- '/home/j4mes/work/clm/CLM-Lake-offline/'
+#outdir <- '/home/j4mes/work/clm/'
+basedir <- './'
 
 meta <- read.table('lake_wide_csv/lks_meta.txt', head=T, row.names=1)
 row.names(meta) <- gsub('_',' ',row.names(meta))
@@ -64,6 +66,7 @@ rastT <- function(fn, varstr){
 	if (grepl('2D', varstr)) T <- ncvar_get(nc_open(fn), varstr)
 	if (grepl('3D', varstr)) T <- ncvar_get(nc_open(fn), varstr)[,1,] # only get sfc
 	values(grd) <- t(T)[1059:1,]
+	names(grd) <- varstr
 	return(grd)
 }
 
